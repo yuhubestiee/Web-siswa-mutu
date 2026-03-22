@@ -16,57 +16,60 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: var(--dark-bg); display: flex; justify-content: center; color: var(--text-main); }
+        body { background-color: var(--dark-bg); color: var(--text-main); overflow-x: hidden; }
 
-        /* Frame Mobile-First */
+        /* --- FRAME FULL MOBILE --- */
         .app-container { 
-            width: 100%; max-width: 450px; 
+            width: 100vw; /* Paksa Full Layar HP */
             min-height: 100vh; 
             background-color: var(--card-bg); 
             position: relative; 
             padding-bottom: 140px; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* --- LOADING SCREEN --- */
+        /* --- LOADING SCREEN DENGAN KOKI META --- */
         #loading-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-color: var(--dark-bg); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            z-index: 9999; transition: 0.8s ease; 
+            z-index: 9999; transition: 0.8s ease-in-out; 
         }
         #loading-screen.fade-out { opacity: 0; visibility: hidden; transform: scale(1.1); }
 
-        /* --- HEADER & CATEGORY --- */
-        .header { padding: 30px 20px 10px; background: var(--card-bg); position: sticky; top: 0; z-index: 100; }
-        .brand { font-size: 24px; font-weight: 800; color: var(--gold); text-align: center; margin-bottom: 15px; letter-spacing: 1px; }
+        /* --- HEADER & BRAND --- */
+        .header { padding: 30px 15px 10px; background: var(--card-bg); position: sticky; top: 0; z-index: 100; }
+        .brand { font-size: 24px; font-weight: 800; color: var(--gold); text-align: center; margin-bottom: 15px; letter-spacing: 1px; line-height: 1.1; }
+        
+        .sub-brand {
+            font-size: 11px;
+            font-weight: 300;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
         
         .category-bar { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; scrollbar-width: none; }
         .category-bar::-webkit-scrollbar { display: none; }
         
         .cat-item { 
-            flex: 0 0 auto; padding: 10px 20px; 
+            flex: 0 0 auto; padding: 10px 18px; 
             background: #252525; border-radius: 12px; 
-            border: 1px solid transparent; transition: 0.3s; cursor: pointer; 
+            border: 1px solid transparent; transition: 0.3s; 
         }
         .cat-item.active { background: rgba(255, 215, 0, 0.1); border-color: var(--gold); }
-        .cat-name { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-dim); letter-spacing: 1px; }
+        .cat-name { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-dim); }
         .cat-item.active .cat-name { color: var(--gold); }
 
-        /* Update Sub-Brand SMK (Taruh di <style>) */
-        .sub-brand {
-        font-size: 20px; /* Jauh lebih kecil, tapi di HP tetep kebaca jelas */
-        font-weight: 300; /* Pake font-weight paling tipis biar elegan */
-        color: var(--text-dim); /* Warna abu-abu redup (contrast-ratio aman) */
-        text-transform: uppercase; /* Tetep huruf kapital semua */
-        letter-spacing: 0px; /* Dikasih spasi lebar biar estetik */
-        margin-top: 1px; /* Rame-rame mepet dikit ke judul utama */
-        line-height: 1.1; /* Jangan terlalu renggang vertical */
-        opacity: 0.8; /* Dikasih transparansi tipis biar 'subtle' */
-}
-
-        /* --- MENU GRID --- */
-        .menu-grid { padding: 10px 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        /* --- MENU GRID FULL --- */
+        .menu-grid { 
+            padding: 10px 15px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            width: 100%;
+        }
         
         .card { 
             background: #252525; border-radius: 20px; 
@@ -75,32 +78,34 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         
-        .card-img { width: 100%; height: 115px; object-fit: cover; background: #333; transition: 0.5s; }
-        .card:hover .card-img { transform: scale(1.05); }
+        .card-img { width: 100%; height: 115px; object-fit: cover; background: #333; }
         
-        /* Merapatkan Spasi Teks agar lebih Art */
-        .card-body { padding: 12px; display: flex; flex-direction: column; gap: 1px; }
-        .title { font-size: 13px; font-weight: 600; line-height: 1.2; height: 32px; overflow: hidden; color: var(--text-main); }
-        .price { font-size: 15px; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
+        .card-body { padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+        .title { 
+            font-size: 13px; font-weight: 600; line-height: 1.2; 
+            height: 32px; overflow: hidden; color: var(--text-main);
+            text-transform: capitalize; /* Biar rapi otomatis */
+        }
+        .price { font-size: 15px; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
 
-        /* --- PLUS MINUS CONTROLS --- */
+        /* --- CONTROLS --- */
         .btn-add { 
             width: 100%; padding: 10px; background: var(--gold); color: #000; 
-            border: none; border-radius: 10px; font-weight: 800; font-size: 11px; cursor: pointer; 
+            border: none; border-radius: 10px; font-weight: 800; font-size: 11px; 
         }
         
         .qty-control { 
             display: flex; justify-content: space-between; align-items: center; 
             background: #333; border-radius: 10px; overflow: hidden; border: 1px solid var(--gold); 
         }
-        .btn-qty { width: 35px; height: 35px; border: none; background: transparent; color: var(--gold); font-size: 20px; font-weight: bold; cursor: pointer; }
+        .btn-qty { width: 35px; height: 35px; border: none; background: transparent; color: var(--gold); font-size: 20px; font-weight: bold; }
         .qty-num { font-weight: 800; font-size: 14px; color: #fff; }
 
-        /* --- FLOATING ORDER BAR (THE ART DOCK) --- */
+        /* --- FLOATING DOCK --- */
         .dock-wrapper { position: fixed; bottom: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; pointer-events: none; }
         .dock { 
-            width: 90%; max-width: 400px; padding: 18px 25px; 
-            background: rgba(30, 30, 30, 0.85); 
+            width: 92%; padding: 18px 25px; 
+            background: rgba(30, 30, 30, 0.9); 
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255,215,0,0.3); border-radius: 22px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -109,19 +114,15 @@
         }
         .dock.active { transform: translateY(0); }
         .total-val { font-size: 20px; font-weight: 800; color: var(--gold); }
-        
-        .btn-pay { 
-            padding: 12px 25px; background: var(--gold); color: #000; 
-            border: none; border-radius: 14px; font-weight: 800; font-size: 14px; 
-            box-shadow: 0 4px 10px rgba(255,215,0,0.2);
-        }
+        .btn-pay { padding: 12px 25px; background: var(--gold); color: #000; border: none; border-radius: 14px; font-weight: 800; font-size: 14px; }
     </style>
 </head>
 <body>
+
 <div class="app-container">
     <div id="loading-screen">
-        <img src="https://image2url.com/r2/default/gifs/1774170977757-603ed6a3-e38f-4bc5-832a-6fa7639c3a76.gif" style="width:200px; height:auto;">
-        <p style="margin-top:10px; color:var(--gold); font-size:14px; letter-spacing:4px; font-weight:800; text-transform:uppercase;">
+        <img src="https://image2url.com/r2/default/gifs/1774170977757-603ed6a3-e38f-4bc5-832a-6fa7639c3a76.gif" style="width:220px; height:auto;">
+        <p style="margin-top:15px; color:var(--gold); font-size:12px; letter-spacing:3px; font-weight:800; text-transform:uppercase; text-align:center; padding:0 20px;">
             KANTIN KAMPUS 2 MUTU
         </p>
     </div>
@@ -131,147 +132,117 @@
             KANTIN KAMPUS 2
             <div class="sub-brand">SMK Muhammadiyah 1 Prambon</div>
         </div>
-        <div class="category-bar" id="cat-list">
-            </div>
+        <div class="category-bar" id="cat-list"></div>
     </div>
 
-    <div class="menu-grid" id="menu-display">
-        </div>
+    <div class="menu-grid" id="menu-display"></div>
 </div>
 
-        <div class="dock-wrapper">
-            <div class="dock" id="dock">
-                <div>
-                    <p style="font-size:10px; color:var(--text-dim); margin-bottom: 2px;">Total <span id="qty-total">0</span> Pesanan</p>
-                    <p class="total-val" id="price-total">Rp 0</p>
-                </div>
-                <button class="btn-pay" onclick="alert('Lanjut ke Pemesanan?')">PESAN</button>
-            </div>
+<div class="dock-wrapper">
+    <div class="dock" id="dock">
+        <div>
+            <p style="font-size:10px; color:var(--text-dim); margin-bottom: 2px;">Total <span id="qty-total">0</span> Pesanan</p>
+            <p class="total-val" id="price-total">Rp 0</p>
         </div>
+        <button class="btn-pay" onclick="handleCheckout()">PESAN</button>
     </div>
+</div>
 
-    <script>
-        // 🔗 URL Google Script Lu
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwe7AhpgKehwmReVQZpXSoq5aNChEwR4dNLyXkjAU9FfRnBO0zJCCSPa8zlI1XzVA/exec";
-        
-        let allData = [];
-        let cart = {};
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwe7AhpgKehwmReVQZpXSoq5aNChEwR4dNLyXkjAU9FfRnBO0zJCCSPa8zlI1XzVA/exec";
+    let allData = [];
+    let cart = {};
 
-        // --- 1. AMBIL DATA DARI GOOGLE SHEET ---
-        async function init() {
-            try {
-                const res = await fetch(SCRIPT_URL);
-                const raw = await res.json();
-                
-                allData = raw.map((item, i) => ({
-                    id: `item-${i}`,
-                    name: item.name,
-                    price: parseInt(item.price),
-                    cat: item.category,
-                    // Prioritas ambil dari kolom imgurl (D1) yang baru lu buat!
-                    img: (item.imgurl && item.imgurl.trim() !== "") 
-                         ? item.imgurl 
-                         : `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop` 
-                }));
-
-                renderCategories();
-                renderMenu('Semua');
-                
-                // Matikan loading dengan jeda elegan
-                setTimeout(() => {
-                    document.getElementById('loading-screen').classList.add('fade-out');
-                }, 1500);
-            } catch (e) { 
-                console.error("Gagal sinkron!", e); 
-                document.getElementById('loading-screen').innerHTML = "<p>Gagal konek cloud. Cek koneksi!</p>";
-            }
+    async function init() {
+        try {
+            const res = await fetch(SCRIPT_URL);
+            const raw = await res.json();
+            allData = raw.map((item, i) => ({
+                id: `item-${i}`,
+                name: item.name,
+                price: parseInt(item.price),
+                cat: item.category,
+                img: (item.imgurl && item.imgurl.trim() !== "") ? item.imgurl : `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop` 
+            }));
+            renderCategories();
+            renderMenu('Semua');
+            setTimeout(() => { document.getElementById('loading-screen').classList.add('fade-out'); }, 2000);
+        } catch (e) {
+            console.error(e);
+            document.getElementById('loading-screen').innerHTML = "<p>Koneksi Terputus...</p>";
         }
+    }
 
-        // --- 2. TAMPILKAN KATEGORI ---
-        function renderCategories() {
-            const list = document.getElementById('cat-list');
-            const cats = ['Semua', ...new Set(allData.map(d => d.cat))];
-            
-            list.innerHTML = cats.map(c => `
-                <div class="cat-item ${c==='Semua'?'active':''}" onclick="filterCat('${c}', this)">
-                    <span class="cat-name">${c}</span>
-                </div>
-            `).join('');
-        }
+    function renderCategories() {
+        const list = document.getElementById('cat-list');
+        const cats = ['Semua', ...new Set(allData.map(d => d.cat))];
+        list.innerHTML = cats.map(c => `
+            <div class="cat-item ${c==='Semua'?'active':''}" onclick="filterCat('${c}', this)">
+                <span class="cat-name">${c}</span>
+            </div>
+        `).join('');
+    }
 
-        // --- 3. TAMPILKAN MENU ---
-        function renderMenu(cat) {
-            const display = document.getElementById('menu-display');
-            const filtered = cat === 'Semua' ? allData : allData.filter(d => d.cat === cat);
-            
-            display.innerHTML = filtered.map(d => {
-                const q = cart[d.id] ? cart[d.id].qty : 0;
-                return `
-                <div class="card">
-                    <img src="${d.img}" class="card-img" onerror="this.src='https://via.placeholder.com/200x115?text=No+Image'">
-                    <div class="card-body">
-                        <p class="title">${d.name}</p>
-                        <p class="price">Rp ${d.price.toLocaleString('id-ID')}</p>
-                        <div id="ctrl-${d.id}">
-                            ${q > 0 ? renderQtyCtrl(d.id, q) : `<button class="btn-add" onclick="updateCart('${d.id}', 1)">TAMBAH</button>`}
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function renderQtyCtrl(id, qty) {
+    function renderMenu(cat) {
+        const display = document.getElementById('menu-display');
+        const filtered = cat === 'Semua' ? allData : allData.filter(d => d.cat === cat);
+        display.innerHTML = filtered.map(d => {
+            const q = cart[d.id] ? cart[d.id].qty : 0;
             return `
-            <div class="qty-control">
-                <button class="btn-qty" onclick="updateCart('${id}', -1)">-</button>
-                <span class="qty-num">${qty}</span>
-                <button class="btn-qty" onclick="updateCart('${id}', 1)">+</button>
+            <div class="card">
+                <img src="${d.img}" class="card-img" onerror="this.src='https://via.placeholder.com/200x115?text=No+Image'">
+                <div class="card-body">
+                    <p class="title">${d.name}</p>
+                    <p class="price">Rp ${d.price.toLocaleString('id-ID')}</p>
+                    <div id="ctrl-${d.id}">
+                        ${q > 0 ? renderQtyCtrl(d.id, q) : `<button class="btn-add" onclick="updateCart('${d.id}', 1)">TAMBAH</button>`}
+                    </div>
+                </div>
             </div>`;
-        }
+        }).join('');
+    }
 
-        // --- 4. LOGIKA KERANJANG ---
-        function updateCart(id, change) {
-            const item = allData.find(d => d.id === id);
-            if (!cart[id]) cart[id] = { name: item.name, price: item.price, qty: 0 };
-            
-            cart[id].qty += change;
-            if (cart[id].qty <= 0) delete cart[id];
+    function renderQtyCtrl(id, qty) {
+        return `<div class="qty-control">
+            <button class="btn-qty" onclick="updateCart('${id}', -1)">-</button>
+            <span class="qty-num">${qty}</span>
+            <button class="btn-qty" onclick="updateCart('${id}', 1)">+</button>
+        </div>`;
+    }
 
-            // Update UI tombol di card secara spesifik tanpa refresh semua
-            const ctrl = document.getElementById(`ctrl-${id}`);
-            const currentQty = cart[id] ? cart[id].qty : 0;
-            
-            if (currentQty > 0) {
-                ctrl.innerHTML = renderQtyCtrl(id, currentQty);
-            } else {
-                ctrl.innerHTML = `<button class="btn-add" onclick="updateCart('${id}', 1)">TAMBAH</button>`;
-            }
-            
-            updateDock();
-        }
+    function updateCart(id, change) {
+        const item = allData.find(d => d.id === id);
+        if (!cart[id]) cart[id] = { name: item.name, price: item.price, qty: 0 };
+        cart[id].qty += change;
+        if (cart[id].qty <= 0) delete cart[id];
 
-        function updateDock() {
-            let totalQty = 0, totalPrice = 0;
-            for(let key in cart) { 
-                totalQty += cart[key].qty; 
-                totalPrice += cart[key].qty * cart[key].price; 
-            }
-            
-            const dock = document.getElementById('dock');
-            document.getElementById('qty-total').innerText = totalQty;
-            document.getElementById('price-total').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-            
-            totalQty > 0 ? dock.classList.add('active') : dock.classList.remove('active');
-        }
+        const ctrl = document.getElementById(`ctrl-${id}`);
+        const currentQty = cart[id] ? cart[id].qty : 0;
+        ctrl.innerHTML = currentQty > 0 ? renderQtyCtrl(id, currentQty) : `<button class="btn-add" onclick="updateCart('${id}', 1)">TAMBAH</button>`;
+        updateDock();
+    }
 
-        function filterCat(c, el) {
-            document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            renderMenu(c);
-        }
+    function updateDock() {
+        let totalQty = 0, totalPrice = 0;
+        for(let key in cart) { totalQty += cart[key].qty; totalPrice += cart[key].qty * cart[key].price; }
+        const dock = document.getElementById('dock');
+        document.getElementById('qty-total').innerText = totalQty;
+        document.getElementById('price-total').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+        totalQty > 0 ? dock.classList.add('active') : dock.classList.remove('active');
+    }
 
-        // Jalankan Inisialisasi
-        init();
-    </script>
+    function filterCat(c, el) {
+        document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        renderMenu(c);
+    }
+
+    function handleCheckout() {
+        alert("Pesanan diterima! Lanjut ke WhatsApp untuk konfirmasi?");
+    }
+
+    init();
+</script>
+
 </body>
 </html>
