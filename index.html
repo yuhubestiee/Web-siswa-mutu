@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kantin Mutu - Zoom Edition</title>
+    <title>Kantin Mutu - Fast & Zoom Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -14,7 +14,7 @@
             --text-dim: #A0A0A0; 
         }
 
-        /* Reset Total biar Full Layar */
+        /* Reset Total biar Full Layar & Ringan */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body { 
@@ -24,110 +24,89 @@
             width: 100vw;
         }
 
-        /* --- LOADING SCREEN --- */
+        /* --- LOADING SCREEN MINIMALIS & SUPER CEPAT --- */
         #loading-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-color: var(--dark-bg); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            z-index: 9999; transition: 0.5s ease; 
+            z-index: 9999; 
+            /* Transisi cepat tanpa ribet */
+            transition: 0.3s ease-out; 
         }
         #loading-screen.fade-out { opacity: 0; visibility: hidden; }
 
-        /* --- CONTAINER UTAMA (FULL SCREEN TANPA SISA) --- */
+        /* Loader Ring Simpel (Gak pake gambar koki) */
+        .loader-ring {
+            width: 30px; height: 30px; 
+            border: 3px solid #333; border-top-color: var(--gold); 
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+
+        /* --- CONTAINER UTAMA (FULL ZOOM LOOK - PROFE) --- */
         .app-container { 
-            width: 100%; 
-            min-height: 100vh; 
-            background-color: var(--dark-bg); 
-            padding-bottom: 120px; 
+            width: 100%; min-height: 100vh; 
+            background-color: var(--dark-bg); padding-bottom: 120px; 
         }
 
-        .header { 
-            padding: 25px 15px 10px; 
-            text-align: center;
-        }
-
-        .brand { font-size: 20px; font-weight: 800; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+        .header { padding: 30px 15px 10px; text-align: center; }
+        .brand { font-size: 20px; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
         .sub-brand { font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; opacity: 0.7; }
 
-        /* Category Bar - Rapi & Geser */
-        .category-bar { 
-            display: flex; gap: 8px; overflow-x: auto; padding: 15px;
-            scrollbar-width: none;
-        }
+        /* Category Bar */
+        .category-bar { display: flex; gap: 8px; overflow-x: auto; padding: 20px 15px; scrollbar-width: none; }
         .category-bar::-webkit-scrollbar { display: none; }
-        
-        .cat-item { 
-            flex: 0 0 auto; padding: 8px 15px; background: #252525; 
-            border-radius: 8px; border: 1px solid #333;
-        }
+        .cat-item { flex: 0 0 auto; padding: 8px 16px; background: #252525; border-radius: 8px; border: 1px solid #333; }
         .cat-item.active { border-color: var(--gold); background: rgba(255, 215, 0, 0.1); }
         .cat-name { font-size: 9px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
         .cat-item.active .cat-name { color: var(--gold); }
 
-        /* --- GRID MENU: RAHASIA EFEK ZOOM LU --- */
+        /* --- GRID MENU (GAGAH & PROPORSIONAL) --- */
         .menu-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); /* Tetap 2 kolom */
-            gap: 12px; /* Jarak antar box pas */
-            padding: 0 12px; /* Jarak ke pinggir layar tipis biar kelihatan gede */
+            display: grid; grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; padding: 0 12px; 
         }
 
         .card { 
-            background: var(--card-bg); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            border: 1px solid #2a2a2a;
+            background: var(--card-bg); border-radius: 12px; 
+            overflow: hidden; display: flex; flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4); border: 1px solid #2a2a2a;
         }
 
-        .card-img { 
-            width: 100%; 
-            aspect-ratio: 4/3; /* Menjaga foto tetep kotak/proporsional, nggak gepeng */
-            object-fit: cover; 
-            background: #252525;
-        }
-
-        .card-body { padding: 10px; display: flex; flex-direction: column; }
-        .title { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #fff; height: 30px; overflow: hidden; }
+        /* Aspect Ratio menjaga foto tetep proporsional */
+        .card-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #252525; }
+        .card-body { padding: 12px; display: flex; flex-direction: column; }
+        .title { font-size: 12px; font-weight: 600; color: #fff; height: 32px; overflow: hidden; margin-bottom: 4px; }
         .price { font-size: 14px; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
 
-        /* Tombol Tambah yang Bold */
         .btn-add { 
-            width: 100%; padding: 10px; background: var(--gold); 
-            color: #000; border: none; border-radius: 6px; 
-            font-weight: 800; font-size: 10px; text-transform: uppercase;
+            width: 100%; padding: 10px; background: var(--gold); color: #000; 
+            border: none; border-radius: 8px; font-weight: 800; font-size: 10px; text-transform: uppercase;
         }
 
-        /* Kontrol Qty saat diklik */
-        .qty-control { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: #333; border-radius: 6px; overflow: hidden; border: 1px solid var(--gold); 
-        }
+        .qty-control { display: flex; justify-content: space-between; align-items: center; background: #333; border-radius: 8px; border: 1px solid var(--gold); }
         .btn-qty { width: 32px; height: 32px; border: none; background: transparent; color: var(--gold); font-size: 18px; font-weight: bold; }
-        .qty-num { font-weight: 800; font-size: 13px; color: #fff; }
+        .qty-num { font-weight: 800; color: #fff; font-size: 13px; }
 
-        /* --- FLOATING ORDER BAR (THE ART DOCK) --- */
+        /* --- FLOATING ORDER BAR --- */
         .dock-wrapper { position: fixed; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; pointer-events: none; }
         .dock { 
-            width: 92%; padding: 15px 20px; 
-            background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; 
-            display: flex; justify-content: space-between; align-items: center; 
-            transform: translateY(150%); transition: 0.4s ease; 
-            pointer-events: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.7); 
+            width: 92%; padding: 15px 20px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; 
+            transform: translateY(150%); transition: 0.4s ease; pointer-events: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.7);
         }
         .dock.active { transform: translateY(0); }
         .total-val { font-size: 16px; font-weight: 800; color: var(--gold); }
         .btn-pay { padding: 10px 20px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 800; font-size: 12px; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <div id="loading-screen">
-            <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+            <div class="loader-ring"></div>
+            <p style="margin-top: 15px; color: var(--gold); font-size: 9px; letter-spacing: 2px; font-weight: 600; opacity: 0.7;">MEMUAT MENU...</p>
         </div>
 
         <div class="header">
@@ -142,7 +121,7 @@
         <div class="dock-wrapper">
             <div class="dock" id="dock">
                 <div>
-                    <p style="font-size:9px; color:var(--text-dim); text-transform:uppercase;">Total Pesanan</p>
+                    <p style="font-size:9px; color:var(--text-dim); text-transform:uppercase;">TOTAL PESANAN</p>
                     <p class="total-val" id="price-total">Rp 0</p>
                 </div>
                 <button class="btn-pay" onclick="alert('Lanjut Pesan?')">PESAN</button>
@@ -159,17 +138,18 @@
             try {
                 const res = await fetch(SCRIPT_URL);
                 const raw = await res.json();
-                
                 allData = raw.map((item, i) => ({
                     id: `item-${i}`,
                     name: item.name,
                     price: parseInt(item.price),
                     cat: item.category,
+                    // Prioritas: Ambil dari kolom imgurl di Sheet lu (Kolom D1)
                     img: (item.imgurl && item.imgurl.trim() !== "") ? item.imgurl : `https://via.placeholder.com/400x300/1e1e1e/ffd700?text=${item.name}` 
                 }));
-
                 renderCategories();
                 renderMenu('Semua');
+                
+                // Hilangkan delay (setTimeout dibuang) biar langsung ngebut masuk menu
                 document.getElementById('loading-screen').classList.add('fade-out');
             } catch (e) { console.error(e); }
         }
@@ -214,20 +194,17 @@
             if (!cart[id]) cart[id] = { name: item.name, price: item.price, qty: 0 };
             cart[id].qty += change;
             if (cart[id].qty <= 0) delete cart[id];
-
             const ctrl = document.getElementById(`ctrl-${id}`);
             const currentQty = cart[id] ? cart[id].qty : 0;
             ctrl.innerHTML = currentQty > 0 ? renderQtyCtrl(id, currentQty) : `<button class="btn-add" onclick="updateCart('${id}', 1)">TAMBAH</button>`;
-            
             updateDock();
         }
 
         function updateDock() {
             let totalQty = 0, totalPrice = 0;
             for(let key in cart) { totalQty += cart[key].qty; totalPrice += cart[key].qty * cart[key].price; }
-            const dock = document.getElementById('dock');
             document.getElementById('price-total').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-            totalQty > 0 ? dock.classList.add('active') : dock.classList.remove('active');
+            totalQty > 0 ? document.getElementById('dock').classList.add('active') : document.getElementById('dock').classList.remove('active');
         }
 
         function filterCat(c, el) {
@@ -238,8 +215,5 @@
 
         init();
     </script>
-    <style>
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-    </style>
 </body>
 </html>
