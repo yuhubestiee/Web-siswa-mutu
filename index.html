@@ -6,277 +6,159 @@
     <title>Kantin Mutu - Exclusive Menu</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* =========================================
-           1. THE ART CORE (CSS)
-        ========================================= */
-        :root {
-            --gold: #FFD700;
-            --dark-bg: #121212;
-            --card-bg: #1E1E1E;
-            --text-main: #FFFFFF;
-            --text-dim: #A0A0A0;
-        }
+        :root { --gold: #FFD700; --dark-bg: #121212; --card-bg: #1E1E1E; --text-main: #FFFFFF; --text-dim: #A0A0A0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--dark-bg); display: flex; justify-content: center; color: var(--text-main); }
 
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        .app-container { width: 100%; max-width: 450px; min-height: 100vh; background-color: var(--card-bg); position: relative; padding-bottom: 120px; }
 
-        body {
-            background-color: var(--dark-bg);
-            display: flex; justify-content: center;
-            color: var(--text-main);
-            overflow: hidden; 
-        }
+        /* --- LOADING ART --- */
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--dark-bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.8s; }
+        #loading-screen.fade-out { opacity: 0; visibility: hidden; }
 
-        /* Frame khusus buat PC biar tetep ukuran HP */
-        .app-container {
-            width: 100%; max-width: 450px;
-            height: 100vh;
-            background-color: var(--card-bg);
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-
-        /* =========================================
-           2. LOADING ANIMATION (ARTISTIC)
-        ========================================= */
-        #loading-screen {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: var(--dark-bg);
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 9999;
-            transition: all 0.8s ease;
-        }
-
-        #loading-screen.fade-out {
-            opacity: 0; visibility: hidden; transform: scale(1.1);
-        }
-
-        .loader-gif {
-            width: 150px; height: auto;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px rgba(255,215,0,0.4));
-        }
-
-        .loader-bar {
-            width: 100px; height: 3px;
-            background: #333; border-radius: 10px; overflow: hidden;
-        }
-
-        .loader-progress {
-            width: 0%; height: 100%;
-            background: var(--gold);
-            animation: progress 2s ease-in-out forwards;
-        }
-
-        @keyframes progress { to { width: 100%; } }
-
-        /* =========================================
-           3. HEADER & CATEGORY
-        ========================================= */
-        .header {
-            padding: 30px 20px 10px;
-            background: linear-gradient(180deg, #1E1E1E 80%, rgba(30,30,30,0) 100%);
-            position: sticky; top: 0; z-index: 100;
-        }
-
-        .brand {
-            font-size: 28px; font-weight: 800;
-            color: var(--gold); text-align: center;
-            letter-spacing: -1px; margin-bottom: 20px;
-        }
-
-        .category-bar {
-            display: flex; overflow-x: auto;
-            gap: 12px; padding-bottom: 10px;
-            scrollbar-width: none;
-        }
+        /* --- HEADER & CATEGORY --- */
+        .header { padding: 30px 20px 10px; background: var(--card-bg); position: sticky; top: 0; z-index: 100; }
+        .brand { font-size: 24px; font-weight: 800; color: var(--gold); text-align: center; margin-bottom: 15px; }
+        .category-bar { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; scrollbar-width: none; }
         .category-bar::-webkit-scrollbar { display: none; }
-
-        .cat-item {
-            flex: 0 0 auto; padding: 12px 20px;
-            background: #252525; border-radius: 15px;
-            border: 1px solid transparent; transition: 0.3s;
-            text-align: center; cursor: pointer;
-        }
-
-        .cat-item.active {
-            background: rgba(255, 215, 0, 0.1);
-            border-color: var(--gold);
-        }
-
-        .cat-name {
-            font-size: 11px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1px;
-            color: var(--text-dim);
-        }
+        .cat-item { flex: 0 0 auto; padding: 10px 18px; background: #252525; border-radius: 12px; border: 1px solid transparent; transition: 0.3s; cursor: pointer; }
+        .cat-item.active { background: rgba(255, 215, 0, 0.1); border-color: var(--gold); }
+        .cat-name { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-dim); }
         .cat-item.active .cat-name { color: var(--gold); }
 
-        /* =========================================
-           4. MENU GRID
-        ========================================= */
-        .menu-grid {
-            padding: 15px 20px 150px;
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+        /* --- MENU GRID --- */
+        .menu-grid { padding: 10px 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card { background: #252525; border-radius: 18px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
+        .card-img { width: 100%; height: 110px; object-fit: cover; background: #333; }
+        
+        /* Merapatkan Spasi Teks */
+        .card-body { padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+        .title { font-size: 13px; font-weight: 600; line-height: 1.2; height: 32px; overflow: hidden; }
+        .price { font-size: 15px; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
 
-        .card {
-            background: #252525; border-radius: 20px;
-            overflow: hidden; transition: 0.3s;
-            position: relative; animation: fadeInUp 0.5s ease forwards;
-        }
+        /* --- CONTROLS --- */
+        .btn-add { width: 100%; padding: 8px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; }
+        .qty-control { display: flex; justify-content: space-between; align-items: center; background: #333; border-radius: 8px; overflow: hidden; border: 1px solid var(--gold); }
+        .btn-qty { width: 32px; height: 32px; border: none; background: transparent; color: var(--gold); font-size: 18px; font-weight: bold; cursor: pointer; }
+        .qty-num { font-weight: 800; font-size: 14px; color: #fff; }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card-img {
-            width: 100%; height: 120px;
-            object-fit: cover; background: #333;
-        }
-
-        .card-body { padding: 15px; }
-
-        .title {
-            font-size: 14px; font-weight: 600;
-            margin-bottom: 5px; height: 40px; overflow: hidden;
-        }
-
-        .price {
-            font-size: 16px; font-weight: 800;
-            color: var(--gold); margin-bottom: 12px;
-        }
-
-        .btn-add {
-            width: 100%; padding: 10px;
-            background: var(--gold); color: #000;
-            border: none; border-radius: 10px;
-            font-weight: 800; font-size: 12px;
-            cursor: pointer;
-        }
-
-        /* =========================================
-           5. DOCKING ORDER BAR
-        ========================================= */
-        .dock {
-            position: absolute; bottom: 0; left: 0;
-            width: 100%; padding: 25px;
-            background: rgba(37, 37, 37, 0.95);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid #333;
-            border-radius: 25px 25px 0 0;
-            display: flex; justify-content: space-between; align-items: center;
-            transform: translateY(100%); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
+        /* --- FLOATING ORDER BAR (FIXED) --- */
+        .dock-wrapper { position: fixed; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; pointer-events: none; }
+        .dock { width: 90%; max-width: 400px; padding: 15px 20px; background: rgba(30, 30, 30, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,215,0,0.3); border-radius: 20px; display: flex; justify-content: space-between; align-items: center; transform: translateY(150%); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dock.active { transform: translateY(0); }
-
-        .total-label { color: var(--text-dim); font-size: 12px; }
-        .total-val { font-size: 22px; font-weight: 800; color: var(--gold); }
-
-        .btn-pay {
-            padding: 15px 25px; background: var(--gold);
-            color: #000; border: none; border-radius: 15px;
-            font-weight: 800; font-size: 14px;
-        }
+        .total-val { font-size: 18px; font-weight: 800; color: var(--gold); }
+        .btn-pay { padding: 12px 20px; background: var(--gold); color: #000; border: none; border-radius: 12px; font-weight: 800; font-size: 13px; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <div id="loading-screen">
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidW1idW1idW1idW1idW1idW1idW1idW1idW1idW1idW1idW0mZXA9djFfaW50ZXJuYWxfZ2lmX2J5X2lkJmN0PXM/3o7TKMGpxx8yGvRjW0/giphy.gif" class="loader-gif">
-            <div class="loader-bar"><div class="loader-progress"></div></div>
-            <p style="margin-top:15px; font-size:10px; letter-spacing:3px; color:#555">KANTIN MUTU V.2026</p>
+            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidW1idW1idW1idW1idW1idW1idW1idW1idW1idW1idW1idW0mZXA9djFfaW50ZXJuYWxfZ2lmX2J5X2lkJmN0PXM/3o7TKMGpxx8yGvRjW0/giphy.gif" style="width:120px;">
         </div>
 
         <div class="header">
             <div class="brand">KANTIN MUTU</div>
-            <div class="category-bar" id="cat-list">
-                </div>
+            <div class="category-bar" id="cat-list"></div>
         </div>
 
-        <div class="menu-grid" id="menu-display">
-            </div>
+        <div class="menu-grid" id="menu-display"></div>
 
-        <div class="dock" id="dock">
-            <div>
-                <p class="total-label"><span id="qty-total">0</span> Pesanan</p>
-                <p class="total-val" id="price-total">Rp 0</p>
+        <div class="dock-wrapper">
+            <div class="dock" id="dock">
+                <div>
+                    <p style="font-size:10px; color:var(--text-dim);">Total <span id="qty-total">0</span> Pesanan</p>
+                    <p class="total-val" id="price-total">Rp 0</p>
+                </div>
+                <button class="btn-pay" onclick="alert('Lanjut ke Payment Gateway?')">PESAN</button>
             </div>
-            <button class="btn-pay" onclick="alert('Step Selanjutnya: Payment Gateway!')">PESAN SEKARANG</button>
         </div>
     </div>
 
     <script>
-        // 🔗 DATABASE LINK (URL ASLI LU TON!)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwe7AhpgKehwmReVQZpXSoq5aNChEwR4dNLyXkjAU9FfRnBO0zJCCSPa8zlI1XzVA/exec";
-
         let allData = [];
         let cart = {};
 
-        // 1. AMBIL DATA
         async function init() {
             try {
                 const res = await fetch(SCRIPT_URL);
                 const raw = await res.json();
                 
-                // Mapping field dari database lama lu (name, price, category)
+                // Mapping: Gunakan item.image_url kalau lu udah bikin kolom di sheet
                 allData = raw.map((item, i) => ({
-                    id: i,
+                    id: `item-${i}`,
                     name: item.name,
                     price: parseInt(item.price),
                     cat: item.category,
-                    img: `https://source.unsplash.com/featured/?food,${item.name}` // Auto-image keren
+                    img: item.image_url || `https://source.unsplash.com/featured/?food,${item.name}` 
                 }));
 
                 renderCategories();
                 renderMenu('Semua');
-
-                // Matikan loading
-                setTimeout(() => {
-                    document.getElementById('loading-screen').classList.add('fade-out');
-                }, 2000);
-
-            } catch (e) {
-                alert("Cloud Offline! Cek koneksi internet lu, Ton.");
-            }
+                document.getElementById('loading-screen').classList.add('fade-out');
+            } catch (e) { console.error(e); }
         }
 
-        // 2. TAMPILKAN KATEGORI
         function renderCategories() {
-            const list = document.getElementById('cat-list');
             const cats = ['Semua', ...new Set(allData.map(d => d.cat))];
-            
-            list.innerHTML = cats.map(c => `
+            document.getElementById('cat-list').innerHTML = cats.map(c => `
                 <div class="cat-item ${c==='Semua'?'active':''}" onclick="filterCat('${c}', this)">
                     <span class="cat-name">${c}</span>
                 </div>
             `).join('');
         }
 
-        // 3. TAMPILKAN MENU
         function renderMenu(cat) {
-            const display = document.getElementById('menu-display');
             const filtered = cat === 'Semua' ? allData : allData.filter(d => d.cat === cat);
-            
-            display.innerHTML = filtered.map(d => `
+            document.getElementById('menu-display').innerHTML = filtered.map(d => {
+                const q = cart[d.id] ? cart[d.id].qty : 0;
+                return `
                 <div class="card">
-                    <img src="${d.img}" class="card-img" alt="Food">
+                    <img src="${d.img}" class="card-img">
                     <div class="card-body">
                         <p class="title">${d.name}</p>
                         <p class="price">Rp ${d.price.toLocaleString('id-ID')}</p>
-                        <button class="btn-add" onclick="addToCart(${d.id})">TAMBAH</button>
+                        <div id="ctrl-${d.id}">
+                            ${q > 0 ? renderQtyCtrl(d.id, q) : `<button class="btn-add" onclick="updateCart('${d.id}', 1)">TAMBAH</button>`}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
+        }
+
+        function renderQtyCtrl(id, qty) {
+            return `
+            <div class="qty-control">
+                <button class="btn-qty" onclick="updateCart('${id}', -1)">-</button>
+                <span class="qty-num">${qty}</span>
+                <button class="btn-qty" onclick="updateCart('${id}', 1)">+</button>
+            </div>`;
+        }
+
+        function updateCart(id, change) {
+            const item = allData.find(d => d.id === id);
+            if (!cart[id]) cart[id] = { name: item.name, price: item.price, qty: 0 };
+            
+            cart[id].qty += change;
+            if (cart[id].qty <= 0) delete cart[id];
+
+            // Update UI Card secara spesifik
+            const ctrl = document.getElementById(`ctrl-${id}`);
+            const currentQty = cart[id] ? cart[id].qty : 0;
+            ctrl.innerHTML = currentQty > 0 ? renderQtyCtrl(id, currentQty) : `<button class="btn-add" onclick="updateCart('${id}', 1)">TAMBAH</button>`;
+            
+            updateDock();
+        }
+
+        function updateDock() {
+            let totalQty = 0, totalPrice = 0;
+            for(let key in cart) { totalQty += cart[key].qty; totalPrice += cart[key].qty * cart[key].price; }
+            
+            const dock = document.getElementById('dock');
+            document.getElementById('qty-total').innerText = totalQty;
+            document.getElementById('price-total').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
+            totalQty > 0 ? dock.classList.add('active') : dock.classList.remove('active');
         }
 
         function filterCat(c, el) {
@@ -285,38 +167,6 @@
             renderMenu(c);
         }
 
-        // 4. KERANJANG LOGIC
-        function addToCart(id) {
-            const item = allData.find(d => d.id === id);
-            if(cart[id]) {
-                cart[id].qty++;
-            } else {
-                cart[id] = { name: item.name, price: item.price, qty: 1 };
-            }
-            updateDock();
-        }
-
-        function updateDock() {
-            const dock = document.getElementById('dock');
-            const qtyEl = document.getElementById('qty-total');
-            const priceEl = document.getElementById('price-total');
-            
-            let totalQty = 0;
-            let totalPrice = 0;
-
-            for(let key in cart) {
-                totalQty += cart[key].qty;
-                totalPrice += cart[key].qty * cart[key].price;
-            }
-
-            if(totalQty > 0) {
-                dock.classList.add('active');
-                qtyEl.innerText = totalQty;
-                priceEl.innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-            }
-        }
-
-        // Jalankan!
         init();
     </script>
 </body>
