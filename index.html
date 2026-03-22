@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kantin Mutu - Exclusive Menu</title>
+    <title>Kantin Mutu - Zoom Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -13,19 +13,15 @@
             --text-main: #FFFFFF; 
             --text-dim: #A0A0A0; 
         }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { background-color: var(--dark-bg); display: flex; justify-content: center; color: var(--text-main); }
 
-        /* Frame Mobile-First */
-        .app-container { 
-            width: 100%; max-width: 450px; 
-            min-height: 100vh; 
-            background-color: var(--card-bg); 
-            position: relative; 
-            padding-bottom: 140px; 
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        /* Reset Total biar Full Layar */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body { 
+            background-color: var(--dark-bg); 
+            color: var(--text-main);
+            overflow-x: hidden;
+            width: 100vw;
         }
 
         /* --- LOADING SCREEN --- */
@@ -33,90 +29,111 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-color: var(--dark-bg); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            z-index: 9999; transition: 0.8s ease; 
+            z-index: 9999; transition: 0.5s ease; 
         }
-        #loading-screen.fade-out { opacity: 0; visibility: hidden; transform: scale(1.1); }
+        #loading-screen.fade-out { opacity: 0; visibility: hidden; }
 
-        /* --- HEADER & CATEGORY --- */
-        .header { padding: 30px 20px 10px; background: var(--card-bg); position: sticky; top: 0; z-index: 100; }
-        .brand { font-size: 24px; font-weight: 800; color: var(--gold); text-align: center; margin-bottom: 15px; letter-spacing: 1px; }
-        
-        .category-bar { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 15px; scrollbar-width: none; }
+        /* --- CONTAINER UTAMA (FULL SCREEN TANPA SISA) --- */
+        .app-container { 
+            width: 100%; 
+            min-height: 100vh; 
+            background-color: var(--dark-bg); 
+            padding-bottom: 120px; 
+        }
+
+        .header { 
+            padding: 25px 15px 10px; 
+            text-align: center;
+        }
+
+        .brand { font-size: 20px; font-weight: 800; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+        .sub-brand { font-size: 10px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; opacity: 0.7; }
+
+        /* Category Bar - Rapi & Geser */
+        .category-bar { 
+            display: flex; gap: 8px; overflow-x: auto; padding: 15px;
+            scrollbar-width: none;
+        }
         .category-bar::-webkit-scrollbar { display: none; }
         
         .cat-item { 
-            flex: 0 0 auto; padding: 10px 20px; 
-            background: #252525; border-radius: 12px; 
-            border: 1px solid transparent; transition: 0.3s; cursor: pointer; 
+            flex: 0 0 auto; padding: 8px 15px; background: #252525; 
+            border-radius: 8px; border: 1px solid #333;
         }
-        .cat-item.active { background: rgba(255, 215, 0, 0.1); border-color: var(--gold); }
-        .cat-name { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-dim); letter-spacing: 1px; }
+        .cat-item.active { border-color: var(--gold); background: rgba(255, 215, 0, 0.1); }
+        .cat-name { font-size: 9px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
         .cat-item.active .cat-name { color: var(--gold); }
 
-        /* --- MENU GRID --- */
-        .menu-grid { padding: 10px 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        .card { 
-            background: #252525; border-radius: 20px; 
-            overflow: hidden; transition: 0.3s; 
-            display: flex; flex-direction: column;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        /* --- GRID MENU: RAHASIA EFEK ZOOM LU --- */
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); /* Tetap 2 kolom */
+            gap: 12px; /* Jarak antar box pas */
+            padding: 0 12px; /* Jarak ke pinggir layar tipis biar kelihatan gede */
         }
-        
-        .card-img { width: 100%; height: 115px; object-fit: cover; background: #333; transition: 0.5s; }
-        .card:hover .card-img { transform: scale(1.05); }
-        
-        /* Merapatkan Spasi Teks agar lebih Art */
-        .card-body { padding: 12px; display: flex; flex-direction: column; gap: 1px; }
-        .title { font-size: 13px; font-weight: 600; line-height: 1.2; height: 32px; overflow: hidden; color: var(--text-main); }
-        .price { font-size: 15px; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
 
-        /* --- PLUS MINUS CONTROLS --- */
-        .btn-add { 
-            width: 100%; padding: 10px; background: var(--gold); color: #000; 
-            border: none; border-radius: 10px; font-weight: 800; font-size: 11px; cursor: pointer; 
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border: 1px solid #2a2a2a;
         }
-        
+
+        .card-img { 
+            width: 100%; 
+            aspect-ratio: 4/3; /* Menjaga foto tetep kotak/proporsional, nggak gepeng */
+            object-fit: cover; 
+            background: #252525;
+        }
+
+        .card-body { padding: 10px; display: flex; flex-direction: column; }
+        .title { font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #fff; height: 30px; overflow: hidden; }
+        .price { font-size: 14px; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
+
+        /* Tombol Tambah yang Bold */
+        .btn-add { 
+            width: 100%; padding: 10px; background: var(--gold); 
+            color: #000; border: none; border-radius: 6px; 
+            font-weight: 800; font-size: 10px; text-transform: uppercase;
+        }
+
+        /* Kontrol Qty saat diklik */
         .qty-control { 
             display: flex; justify-content: space-between; align-items: center; 
-            background: #333; border-radius: 10px; overflow: hidden; border: 1px solid var(--gold); 
+            background: #333; border-radius: 6px; overflow: hidden; border: 1px solid var(--gold); 
         }
-        .btn-qty { width: 35px; height: 35px; border: none; background: transparent; color: var(--gold); font-size: 20px; font-weight: bold; cursor: pointer; }
-        .qty-num { font-weight: 800; font-size: 14px; color: #fff; }
+        .btn-qty { width: 32px; height: 32px; border: none; background: transparent; color: var(--gold); font-size: 18px; font-weight: bold; }
+        .qty-num { font-weight: 800; font-size: 13px; color: #fff; }
 
         /* --- FLOATING ORDER BAR (THE ART DOCK) --- */
-        .dock-wrapper { position: fixed; bottom: 25px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; pointer-events: none; }
+        .dock-wrapper { position: fixed; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 1000; pointer-events: none; }
         .dock { 
-            width: 90%; max-width: 400px; padding: 18px 25px; 
-            background: rgba(30, 30, 30, 0.85); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,215,0,0.3); border-radius: 22px; 
+            width: 92%; padding: 15px 20px; 
+            background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; 
             display: flex; justify-content: space-between; align-items: center; 
-            transform: translateY(180%); transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            pointer-events: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+            transform: translateY(150%); transition: 0.4s ease; 
+            pointer-events: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.7); 
         }
         .dock.active { transform: translateY(0); }
-        .total-val { font-size: 20px; font-weight: 800; color: var(--gold); }
-        
-        .btn-pay { 
-            padding: 12px 25px; background: var(--gold); color: #000; 
-            border: none; border-radius: 14px; font-weight: 800; font-size: 14px; 
-            box-shadow: 0 4px 10px rgba(255,215,0,0.2);
-        }
+        .total-val { font-size: 16px; font-weight: 800; color: var(--gold); }
+        .btn-pay { padding: 10px 20px; background: var(--gold); color: #000; border: none; border-radius: 8px; font-weight: 800; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
         <div id="loading-screen">
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJidW1idW1idW1idW1idW1idW1idW1idW1idW1idW1idW1idW0mZXA9djFfaW50ZXJuYWxfZ2lmX2J5X2lkJmN0PXM/3o7TKMGpxx8yGvRjW0/giphy.gif" style="width:130px;">
-            <p style="margin-top:20px; color:var(--gold); font-size:10px; letter-spacing:4px; font-weight:600;">KANTIN MUTU</p>
+            <div style="width: 40px; height: 40px; border: 3px solid #333; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
         </div>
 
         <div class="header">
             <div class="brand">KANTIN MUTU</div>
-            <div class="category-bar" id="cat-list">
-                </div>
+            <div class="sub-brand">SMK MUHAMMADIYAH 1 PRAMBON</div>
+            <div class="category-bar" id="cat-list"></div>
         </div>
 
         <div class="menu-grid" id="menu-display">
@@ -125,22 +142,19 @@
         <div class="dock-wrapper">
             <div class="dock" id="dock">
                 <div>
-                    <p style="font-size:10px; color:var(--text-dim); margin-bottom: 2px;">Total <span id="qty-total">0</span> Pesanan</p>
+                    <p style="font-size:9px; color:var(--text-dim); text-transform:uppercase;">Total Pesanan</p>
                     <p class="total-val" id="price-total">Rp 0</p>
                 </div>
-                <button class="btn-pay" onclick="alert('Lanjut ke Pemesanan?')">PESAN</button>
+                <button class="btn-pay" onclick="alert('Lanjut Pesan?')">PESAN</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 🔗 URL Google Script Lu
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwe7AhpgKehwmReVQZpXSoq5aNChEwR4dNLyXkjAU9FfRnBO0zJCCSPa8zlI1XzVA/exec";
-        
         let allData = [];
         let cart = {};
 
-        // --- 1. AMBIL DATA DARI GOOGLE SHEET ---
         async function init() {
             try {
                 const res = await fetch(SCRIPT_URL);
@@ -151,47 +165,31 @@
                     name: item.name,
                     price: parseInt(item.price),
                     cat: item.category,
-                    // Prioritas ambil dari kolom imgurl (D1) yang baru lu buat!
-                    img: (item.imgurl && item.imgurl.trim() !== "") 
-                         ? item.imgurl 
-                         : `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop` 
+                    img: (item.imgurl && item.imgurl.trim() !== "") ? item.imgurl : `https://via.placeholder.com/400x300/1e1e1e/ffd700?text=${item.name}` 
                 }));
 
                 renderCategories();
                 renderMenu('Semua');
-                
-                // Matikan loading dengan jeda elegan
-                setTimeout(() => {
-                    document.getElementById('loading-screen').classList.add('fade-out');
-                }, 1500);
-            } catch (e) { 
-                console.error("Gagal sinkron!", e); 
-                document.getElementById('loading-screen').innerHTML = "<p>Gagal konek cloud. Cek koneksi!</p>";
-            }
+                document.getElementById('loading-screen').classList.add('fade-out');
+            } catch (e) { console.error(e); }
         }
 
-        // --- 2. TAMPILKAN KATEGORI ---
         function renderCategories() {
-            const list = document.getElementById('cat-list');
             const cats = ['Semua', ...new Set(allData.map(d => d.cat))];
-            
-            list.innerHTML = cats.map(c => `
+            document.getElementById('cat-list').innerHTML = cats.map(c => `
                 <div class="cat-item ${c==='Semua'?'active':''}" onclick="filterCat('${c}', this)">
                     <span class="cat-name">${c}</span>
                 </div>
             `).join('');
         }
 
-        // --- 3. TAMPILKAN MENU ---
         function renderMenu(cat) {
-            const display = document.getElementById('menu-display');
             const filtered = cat === 'Semua' ? allData : allData.filter(d => d.cat === cat);
-            
-            display.innerHTML = filtered.map(d => {
+            document.getElementById('menu-display').innerHTML = filtered.map(d => {
                 const q = cart[d.id] ? cart[d.id].qty : 0;
                 return `
                 <div class="card">
-                    <img src="${d.img}" class="card-img" onerror="this.src='https://via.placeholder.com/200x115?text=No+Image'">
+                    <img src="${d.img}" class="card-img" onerror="this.src='https://via.placeholder.com/400x300/1e1e1e/ffd700?text=Mutu'">
                     <div class="card-body">
                         <p class="title">${d.name}</p>
                         <p class="price">Rp ${d.price.toLocaleString('id-ID')}</p>
@@ -204,46 +202,31 @@
         }
 
         function renderQtyCtrl(id, qty) {
-            return `
-            <div class="qty-control">
+            return `<div class="qty-control">
                 <button class="btn-qty" onclick="updateCart('${id}', -1)">-</button>
                 <span class="qty-num">${qty}</span>
                 <button class="btn-qty" onclick="updateCart('${id}', 1)">+</button>
             </div>`;
         }
 
-        // --- 4. LOGIKA KERANJANG ---
         function updateCart(id, change) {
             const item = allData.find(d => d.id === id);
             if (!cart[id]) cart[id] = { name: item.name, price: item.price, qty: 0 };
-            
             cart[id].qty += change;
             if (cart[id].qty <= 0) delete cart[id];
 
-            // Update UI tombol di card secara spesifik tanpa refresh semua
             const ctrl = document.getElementById(`ctrl-${id}`);
             const currentQty = cart[id] ? cart[id].qty : 0;
-            
-            if (currentQty > 0) {
-                ctrl.innerHTML = renderQtyCtrl(id, currentQty);
-            } else {
-                ctrl.innerHTML = `<button class="btn-add" onclick="updateCart('${id}', 1)">TAMBAH</button>`;
-            }
+            ctrl.innerHTML = currentQty > 0 ? renderQtyCtrl(id, currentQty) : `<button class="btn-add" onclick="updateCart('${id}', 1)">TAMBAH</button>`;
             
             updateDock();
         }
 
         function updateDock() {
             let totalQty = 0, totalPrice = 0;
-            for(let key in cart) { 
-                totalQty += cart[key].qty; 
-                totalPrice += cart[key].qty * cart[key].price; 
-            }
-            
+            for(let key in cart) { totalQty += cart[key].qty; totalPrice += cart[key].qty * cart[key].price; }
             const dock = document.getElementById('dock');
-            document.getElementById('qty-total').innerText = totalQty;
             document.getElementById('price-total').innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-            
             totalQty > 0 ? dock.classList.add('active') : dock.classList.remove('active');
         }
 
@@ -253,8 +236,10 @@
             renderMenu(c);
         }
 
-        // Jalankan Inisialisasi
         init();
     </script>
+    <style>
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
 </body>
 </html>
