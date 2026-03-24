@@ -8,7 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        :root { --gold: #FFD700; --dark-bg: #121212; --card-bg: #1E1E1E; --text-main: #FFFFFF; --text-dim: #A0A0A0; --special: #f39c12; }
+        :root { --gold: #FFD700; --dark-bg: #121212; --card-bg: #1E1E1E; --text-main: #FFFFFF; --text-dim: #A0A0A0; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--dark-bg); color: var(--text-main); overflow-x: hidden; width: 100vw; }
         
@@ -24,7 +24,6 @@
         .category-bar { display: flex; gap: 10px; overflow-x: auto; padding: 20px 15px; scrollbar-width: none; }
         .cat-item { flex: 0 0 auto; padding: 10px 20px; background: #222; border-radius: 12px; border: 1px solid #333; font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
         .cat-item.active { border-color: var(--gold); background: rgba(255, 215, 0, 0.1); color: var(--gold); }
-        
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px; }
         .card { background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #2a2a2a; }
         .card-img { width: 100%; height: 120px; object-fit: cover; background: #222; }
@@ -32,15 +31,6 @@
         .title { font-size: 12px; font-weight: 600; height: 35px; overflow: hidden; }
         .price { font-size: 14px; font-weight: 800; color: var(--gold); margin: 8px 0; }
         .btn-add { width: 100%; padding: 10px; background: var(--gold); color: #000; border: none; border-radius: 10px; font-weight: 800; font-size: 11px; }
-
-        /* STYLE SPECIAL ORDER - WEB PELANGGAN */
-        #special-order-container { padding: 0 12px; margin-top: 20px; }
-        .special-card { background: var(--card-bg); border-radius: 20px; padding: 25px; border: 1px dashed var(--gold); text-align: center; }
-        .chef-img { width: 110px; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.2)); }
-        .special-input { width: 100%; padding: 12px; background: #252525; border: 1px solid #333; border-radius: 10px; color: #fff; margin-bottom: 10px; outline: none; font-size: 13px; }
-        .btn-special { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 12px; font-weight: 800; cursor: pointer; color: #000; }
-        .live-comment-box { margin-top: 20px; text-align: left; border-top: 1px solid #333; padding-top: 15px; }
-        .comment-item { background: #252525; padding: 10px; border-radius: 10px; margin-bottom: 8px; border-left: 3px solid var(--gold); font-size: 12px; }
 
         .qty-control { display: flex; justify-content: space-between; align-items: center; background: #2a2a2a; border-radius: 10px; border: 1px solid var(--gold); }
         .btn-qty { width: 35px; height: 35px; border: none; background: transparent; color: var(--gold); font-size: 18px; font-weight: bold; }
@@ -52,7 +42,21 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .overlay.active { display: flex; }
         .checkout-card { background: var(--card-bg); border-radius: 20px; padding: 25px; width: 100%; max-width: 400px; border: 1px solid #333; }
-        
+        .form-input { width: 100%; padding: 15px; background: #252525; border: 1px solid #333; border-radius: 12px; color: #fff; margin-bottom: 15px; outline: none; }
+        .pay-option { background: #252525; border: 1px solid #333; padding: 12px; border-radius: 10px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-dim); cursor: pointer; }
+        .pay-option.selected { border-color: var(--gold); background: rgba(255,215,0,0.1); color: var(--gold); }
+
+        /* DESIGN NOTA ESTETIK (MODEL STRUK) */
+        .nota-container { background: #fff; color: #333; padding: 25px; border-radius: 15px 15px 0 0; position: relative; font-family: 'Courier New', Courier, monospace; width: 100%; }
+        .nota-container::after { content: ""; position: absolute; bottom: -12px; left: 0; width: 100%; height: 12px; background-image: radial-gradient(circle, transparent, transparent 50%, #fff 50%, #fff 100%); background-size: 12px 24px; background-position: 0 -12px; }
+        .nota-header { text-align: center; border-bottom: 1px dashed #bbb; padding-bottom: 10px; margin-bottom: 15px; }
+        .nota-body { font-size: 12px; line-height: 1.5; border-bottom: 1px dashed #bbb; padding-bottom: 10px; }
+        .nota-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; padding-top: 10px; margin-bottom: 10px; color: #000; }
+        .nota-footer { text-align: center; font-size: 10px; font-style: italic; color: #777; margin-top: 15px; }
+
+        #qr-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        #qr-image { width: 75%; max-width: 280px; background: #fff; padding: 10px; border-radius: 15px; margin: 20px 0; }
+
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -66,27 +70,7 @@
             <div class="sub-brand">SMK MUHAMMADIYAH 1 PRAMBON</div>
             <div class="category-bar" id="cat-list"></div>
         </div>
-
         <div class="menu-grid" id="menu-display"></div>
-
-        <div id="special-order-container">
-            <div class="special-card">
-                <p style="color:var(--gold); font-weight:800; font-size:14px; margin-bottom:10px;">SPECIAL ORDER</p>
-                <img src="https://cdn-icons-png.flaticon.com/512/3461/3461935.png" class="chef-img" alt="Chef">
-                <p style="font-size: 11px; color: var(--text-dim); margin-bottom: 15px;">Punya ide menu? Kasih tau Chef di sini!</p>
-                
-                <input type="text" id="special-name" class="special-input" placeholder="Nama (Opsional)">
-                <textarea id="special-comment" class="special-input" style="height:80px; resize:none;" placeholder="Rekomendasi menu apa nih bro?"></textarea>
-                
-                <button class="btn-special" id="btn-kirim-ide" onclick="sendComment()">KIRIM IDE MENU 🚀</button>
-
-                <div class="live-comment-box" id="live-comments">
-                    <p style="font-size:10px; color:var(--gold); margin-bottom:10px;">IDE DARI PELANGGAN LAIN:</p>
-                    <div id="comment-list-container"></div>
-                </div>
-            </div>
-        </div>
-
         <div class="dock-wrapper">
             <div class="dock" id="dock">
                 <div><p style="font-size:10px; color:var(--text-dim);">TOTAL</p><p style="font-size:18px; font-weight:800; color:var(--gold);" id="price-total">Rp 0</p></div>
@@ -98,23 +82,53 @@
     <div class="overlay" id="checkout-overlay">
         <div class="checkout-card">
             <h3 style="color:var(--gold); margin-bottom:15px;">DATA PESANAN</h3>
-            <input type="text" id="buyer-name" class="special-input" style="padding:15px;" placeholder="Nama Pelanggan / Meja">
+            <input type="text" id="buyer-name" class="form-input" placeholder="Nama Pelanggan / Meja">
             <div id="order-summary" style="margin-bottom:15px; font-size:12px;"></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:20px;">
-                <div class="pay-option" style="background:#252525; border:1px solid #333; padding:12px; border-radius:10px; text-align:center; color:var(--text-dim); cursor:pointer;" onclick="selectPay('QRIS', this)">QRIS</div>
-                <div class="pay-option" style="background:#252525; border:1px solid #333; padding:12px; border-radius:10px; text-align:center; color:var(--text-dim); cursor:pointer;" onclick="selectPay('TUNAI', this)">TUNAI</div>
+                <div class="pay-option" onclick="selectPay('QRIS', this)">QRIS</div>
+                <div class="pay-option" onclick="selectPay('TUNAI', this)">TUNAI (BAYAR KASIR)</div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
                 <button onclick="closeCheckout()" style="background:#333; color:#fff; border:none; border-radius:12px; padding:12px;">BATAL</button>
-                <button onclick="prosesPesanan()" style="background:var(--gold); font-weight:800; border:none; border-radius:12px;">ORDER</button>
+                <button onclick="prosesPesanan()" style="background:var(--gold); font-weight:800; border:none; border-radius:12px;">ORDER SEKARANG</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="qr-modal">
+        <h2 style="color:var(--gold)">SCAN & BAYAR</h2>
+        <p id="qr-total-label" style="color:#fff; font-size:22px; font-weight:800; margin-top:5px;"></p>
+        <img id="qr-image" src="" alt="QRIS">
+        <p style="color:var(--text-dim); font-size:11px; padding:0 30px;">Screenshot QR ini dan bayar sesuai nominal.</p>
+        <button id="btn-view-nota" style="margin-top:20px; background:var(--gold); padding:15px 40px; border:none; border-radius:12px; font-weight:800;">📄 LIHAT NOTA</button>
+    </div>
+
+    <div class="overlay" id="nota-overlay">
+        <div style="width: 100%; max-width: 320px;">
+            <div id="nota-pdf-content" class="nota-container">
+                <div class="nota-header">
+                    <b style="font-size:14px;">KANTIN KAMPUS 2 MUTU</b><br>
+                    <span style="font-size:10px;">SMK Muhammadiyah 1 Prambon</span>
+                    <div id="nota-meta" style="font-size:10px; text-align:left; margin-top:10px; border-top:1px dashed #ddd; padding-top:10px;"></div>
+                </div>
+                <div id="nota-items-list" class="nota-body"></div>
+                <div class="nota-total"><span>TOTAL</span><span id="nota-total-val"></span></div>
+                <div class="nota-footer">"Menuntut ilmu adalah jihad yang pahalanya mengalir hingga akhir hayat"</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:30px;">
+                <button onclick="location.reload()" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid #444; border-radius:12px; padding:12px; backdrop-filter:blur(5px);">TUTUP</button>
+                <button onclick="downloadPDF()" style="background:#27ae60; color:#fff; border:none; border-radius:12px; padding:12px; font-weight:bold;">📩 SIMPAN PDF</button>
             </div>
         </div>
     </div>
 
     <script>
-        // PAKAI URL APPS SCRIPT YANG BARU TON
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3nMbmmVeZ4NLiE-ZCaCzKqT26_TBVhnL8ahKOHVxquCXG122zqBto89Nt9HirMXCcWw/exec";
-        
+        // URL Apps Script Terbaru
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVHA7SPg6q5rMuFq4UtD7yVhFczm9yaRrpHEvYh2Te21UPcWcJeAcf9Fk9HWBwSsV2RQ/exec";
+        const TELE_TOKEN = "7982712334:AAFS2RvvZ_p3YACAoFGxwkq_vY9Ov9zKd7E";
+        const TELE_CHAT_ID = "6381109580";
+        const QRIS_DATA = "00020101021126670014ID.CO.QRIS.WWW0215ID10200542345670303UME51440014ID.CO.QRIS.WWW0215ID10200542345670303UME5204599953033605802ID5911KANTIN MUTU6007PRAMBON6105644716304ABCD";
+
         let allData = [], cart = {}, currentCat = "Semua", selectedPay = "", currentOrderData = {};
 
         async function init() {
@@ -128,23 +142,11 @@
         }
 
         function renderCategories() {
-            const cats = ['Semua', ...new Set(allData.map(d => d.cat)), 'SPECIAL ORDER'];
+            const cats = ['Semua', ...new Set(allData.map(d => d.cat))];
             document.getElementById('cat-list').innerHTML = cats.map(c => `<div class="cat-item ${c===currentCat?'active':''}" onclick="filterCat('${c}')">${c}</div>`).join('');
         }
 
-        function filterCat(c) { 
-            currentCat = c; 
-            renderCategories(); 
-            
-            // Logika Tampilan: Jika klik Special Order, sembunyikan menu grid
-            if(c === 'SPECIAL ORDER') {
-                document.getElementById('menu-display').style.display = 'none';
-                document.getElementById('special-order-container').scrollIntoView({behavior: "smooth"});
-            } else {
-                document.getElementById('menu-display').style.display = 'grid';
-                renderMenu(c);
-            }
-        }
+        function filterCat(c) { currentCat = c; renderCategories(); renderMenu(c); }
 
         function renderMenu(cat) {
             const filtered = cat === 'Semua' ? allData : allData.filter(d => d.cat === cat);
@@ -169,50 +171,80 @@
             total > 0 ? document.getElementById('dock').classList.add('active') : document.getElementById('dock').classList.remove('active');
         }
 
-        // FUNGSI KIRIM KOMENTAR KE SPREADSHEET
-        async function sendComment() {
-            const name = document.getElementById("special-name").value.trim();
-            const comment = document.getElementById("special-comment").value.trim();
-            const btn = document.getElementById("btn-kirim-ide");
+        function selectPay(m, el) { selectedPay = m; document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); }
+        function openCheckout() { document.getElementById('checkout-overlay').classList.add('active'); }
+        function closeCheckout() { document.getElementById('checkout-overlay').classList.remove('active'); }
 
-            if (!comment) return alert("Isi ide menu lu dulu bro!");
+        async function prosesPesanan() {
+            const namaInput = document.getElementById('buyer-name').value;
+            if(!namaInput || !selectedPay) return alert("Isi Nama & Pilih Pembayaran!");
 
-            btn.disabled = true;
-            btn.innerText = "Mengirim...";
+            // --- LOGIKA ID PESANAN KMU2 ---
+            const now = new Date();
+            const yy = now.getFullYear().toString().slice(-2);
+            const m = (now.getMonth() + 1).toString().padStart(2, '0');
+            const dd = now.getDate().toString().padStart(2, '0');
+            const hh = now.getHours().toString().padStart(2, '0');
+            const mm = now.getMinutes().toString().padStart(2, '0');
+            const ss = now.getSeconds().toString().padStart(2, '0');
+            const rand = Math.floor(Math.random() * 90) + 10;
+            const orderID = `KMU2${yy}${m}${dd}${hh}${mm}${ss}${rand}`;
 
+            let total = 0, detail = "";
+            for(let k in cart) { total += cart[k].qty * cart[k].price; detail += `${cart[k].name} (x${cart[k].qty}), `; }
+
+            const statusBayar = (selectedPay === 'QRIS') ? "QRIS" : "Tunai (Bayar di kasir)";
+            currentOrderData = { nama: namaInput, total, statusBayar, orderID };
+
+            // 1. SIMPAN SHEET (KOLOM A-F)
             const payload = {
-                action: "saveComment",
-                nama: name || "Anonim",
-                komentar: comment
+                action: "saveOrder",
+                table: orderID,       // Kolom A
+                datetime: now.toLocaleString("id-ID"), // Kolom B
+                items: detail,        // Kolom C
+                total: total,         // Kolom D
+                kategori: statusBayar, // Kolom E
+                nama: namaInput       // Kolom F
             };
 
             try {
-                // Gunakan POST ke Apps Script
-                await fetch(SCRIPT_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    body: JSON.stringify(payload)
-                });
+                fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+            } catch (e) { console.log(e); }
 
-                // Render Live di Web
-                const container = document.getElementById("comment-list-container");
-                const div = document.createElement("div");
-                div.className = "comment-item";
-                div.innerHTML = `<b>${payload.nama}</b>: ${comment}`;
-                container.prepend(div);
+            // 2. TELEGRAM
+            const msg = `🚀 *PESANAN BARU*\n🆔 *ID:* ${orderID}\n👤 *Nama:* ${namaInput}\n💰 *Total:* Rp ${total.toLocaleString('id-ID')}\n💳 *Status:* ${statusBayar}\n📦 *Item:* ${detail}`;
+            fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TELE_CHAT_ID, text: msg, parse_mode: 'Markdown' }) });
 
-                document.getElementById("special-comment").value = "";
-                alert("Ide lu mantap! Udah masuk ke meja Chef.");
-            } catch (e) {
-                alert("Error kirim komentar.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "KIRIM IDE MENU 🚀";
+            // 3. TAMPILAN
+            if(selectedPay === 'QRIS') {
+                document.getElementById('qr-total-label').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+                document.getElementById('qr-image').src = `https://qris.kurniawanad.my.id/qris.php?data=${QRIS_DATA}&amount=${total}`;
+                document.getElementById('qr-modal').style.display = 'flex';
+                document.getElementById('btn-view-nota').onclick = showNotaPreview;
+            } else {
+                showNotaPreview();
             }
         }
 
-        // SISA FUNGSI PESANAN (PROSES PESANAN, DLL) TETAP SAMA SEPERTI KODE LAMA LU
-        // ... (Tambahkan kembali fungsi prosesPesanan, openCheckout, dsb dari file asli lu)
+        function showNotaPreview() {
+            const d = currentOrderData;
+            document.getElementById('nota-meta').innerHTML = `ID: <b>${d.orderID}</b><br>Pelanggan: <b>${d.nama}</b><br>Waktu: ${new Date().toLocaleString("id-ID")}<br>Bayar: ${d.statusBayar}`;
+            
+            let itemsHtml = "";
+            for(let k in cart) { itemsHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${cart[k].name} x${cart[k].qty}</span><span>${(cart[k].qty * cart[k].price).toLocaleString('id-ID')}</span></div>`; }
+            
+            document.getElementById('nota-items-list').innerHTML = itemsHtml;
+            document.getElementById('nota-total-val').innerText = `Rp ${d.total.toLocaleString('id-ID')}`;
+            if(document.getElementById('qr-modal')) document.getElementById('qr-modal').style.display = 'none';
+            document.getElementById('checkout-overlay').classList.remove('active');
+            document.getElementById('nota-overlay').classList.add('active');
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('nota-pdf-content');
+            const opt = { margin: 10, filename: `Nota-${currentOrderData.nama}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'mm', format: 'a6', orientation: 'portrait' } };
+            html2pdf().set(opt).from(element).save();
+        }
 
         init();
     </script>
