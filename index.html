@@ -163,46 +163,96 @@
         }
 
         function closeCheckout() { document.getElementById('checkout-overlay').classList.remove('active'); }
+        
+async function prosesPesanan() {
+    const nama = document.getElementById('buyer-name').value;
+    if(!nama || !selectedPay) return alert("Isi Nama & Pilih Pembayaran!");
 
-        async function prosesPesanan() {
-            const nama = document.getElementById('buyer-name').value;
-            if(!nama || !selectedPay) return alert("Isi Nama & Pilih Pembayaran!");
+    let total = 0, detail = "";
+    let itemsArray = [];
+    for(let k in cart) { 
+        total += cart[k].qty * cart[k].price; 
+        detail += `${cart[k].name} (x${cart[k].qty}), `;
+        itemsArray.push(`${cart[k].name} (${cart[k].qty}) - Rp ${(cart[k].qty * cart[k].price).toLocaleString('id-ID')}`);
+    }
 
-            let total = 0, detail = "";
-            for(let k in cart) { total += cart[k].qty * cart[k].price; detail += `${cart[k].name} (x${cart[k].qty}), `; }
+    // Penyesuaian Status Pembayaran sesuai request lu
+    const statusBayar = (selectedPay === 'QRIS') ? "QRIS" : "Tunai (Bayar di kasir)";
+    const orderID = `KMU2-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            // 1. SIMPAN KE SPREADSHEET (History)
-            const payload = {
-                action: "saveOrder",
-                table: nama,
-                datetime: new Date().toLocaleString("id-ID"),
-                items: detail,
-                total: total,
-                kategori: "Self Service" //
-            };
+    // 1. SIMPAN KE SPREADSHEET (History)
+    const payload = {
+        action: "saveOrder",
+        table: nama,
+        datetime: new Date().toLocaleString("id-ID"),
+        items: detail,
+        total: total,
+        kategori: statusBayar // Mengirim status bayar ke kolom Kategori di Sheet
+    };
 
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            } catch (e) { console.error("Sync Error:", e); }
+    try {
+        await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    } catch (e) { console.error("Sync Error:", e); }
 
-            // 2. KIRIM TELEGRAM
-            const msg = `🚀 *PESANAN BARU!*\n👤 *Nama:* ${nama}\n💰 *Total:* Rp ${total.toLocaleString('id-ID')}\n💳 *Bayar:* ${selectedPay}\n📦 *Item:* ${detail}\n🏷️ *Kategori:* Self Service`;
-            await fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TELE_CHAT_ID, text: msg, parse_mode: 'Markdown' })
-            });
+    // 2. KIRIM TELEGRAM
+    const msg = `🚀 *PESANAN BARU (WEB)*\n👤 *Nama:* ${nama}\n💰 *Total:* Rp ${total.toLocaleString('id-ID')}\n💳 *Bayar:* ${statusBayar}\n📦 *Item:* ${detail}\n🏷️ *Kategori:* Self Service`;
+    await fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TELE_CHAT_ID, text: msg, parse_mode: 'Markdown' })
+    });
 
-            // 3. QRIS LOGIC
-            if(selectedPay === 'QRIS') {
-                document.getElementById('qr-total-label').innerText = `Rp ${total.toLocaleString('id-ID')}`;
-                document.getElementById('qr-image').src = `https://qris.kurniawanad.my.id/qris.php?data=${QRIS_DATA}&amount=${total}`;
-                document.getElementById('qr-modal').style.display = 'flex';
-            } else {
-                alert("Pesanan Tunai Berhasil! Cek status di kasir.");
-                location.reload();
-            }
+    // 3. LOGIKA PEMBAYARAN & NOTA
+    if(selectedPay === 'QRIS') {
+        document.getElementById('qr-total-label').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+        document.getElementById('qr-image').src = `https://qris.kurniawanad.my.id/qris.php?data=${QRIS_DATA}&amount=${total}`;
+        document.getElementById('qr-modal').style.display = 'flex';
+        
+        // Tambahkan tombol unduh nota di bawah QRIS jika belum ada
+        if (!document.getElementById('btn-download-nota')) {
+            const btnNota = document.createElement("button");
+            btnNota.id = "btn-download-nota";
+            btnNota.innerHTML = "💾 UNDUH NOTA PESANAN";
+            btnNota.style = "margin-top:20px; background:#444; color:#fff; padding:15px; border:none; border-radius:12px; font-weight:800; width:80%; cursor:pointer;";
+            btnNota.onclick = () => generateNota(nama, itemsArray, total, statusBayar, orderID);
+            document.getElementById('qr-modal').appendChild(btnNota);
         }
+    } else {
+        alert("Pesanan Tunai Berhasil! Nota akan otomatis diunduh.");
+        generateNota(nama, itemsArray, total, statusBayar, orderID);
+        setTimeout(() => location.reload(), 2000);
+    }
+}
 
+// FUNGSI GENERATE NOTA (.TXT)
+function generateNota(nama, items, total, metode, id) {
+    const divider = "================================";
+    const line = "--------------------------------";
+    const notaText = `
+${divider}
+     KANTIN KAMPUS 2 MUTU
+  SMK Muhammadiyah 1 Prambon
+${divider}
+NO. PESANAN : ${id}
+PELANGGAN   : ${nama}
+WAKTU       : ${new Date().toLocaleString("id-ID")}
+PEMBAYARAN  : ${metode}
+${line}
+${items.join('\n')}
+${line}
+TOTAL BAYAR : Rp ${total.toLocaleString('id-ID')}
+${divider}
+  Menuntut ilmu adalah jihad 
+ yang pahalanya mengalir hingga 
+         akhir hayat
+${divider}
+    `;
+
+    const blob = new Blob([notaText], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Nota-${nama}-${id}.txt`;
+    link.click();
+}
         init();
     </script>
 </body>
