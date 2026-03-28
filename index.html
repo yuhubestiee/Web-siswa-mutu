@@ -24,6 +24,7 @@
         .category-bar { display: flex; gap: 10px; overflow-x: auto; padding: 20px 15px; scrollbar-width: none; }
         .cat-item { flex: 0 0 auto; padding: 10px 20px; background: #222; border-radius: 12px; border: 1px solid #333; font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
         .cat-item.active { border-color: var(--gold); background: rgba(255, 215, 0, 0.1); color: var(--gold); }
+        
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 12px; }
         .card { background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #2a2a2a; }
         .card-img { width: 100%; height: 120px; object-fit: cover; background: #222; }
@@ -43,12 +44,11 @@
         .overlay.active { display: flex; }
         .checkout-card { background: var(--card-bg); border-radius: 20px; padding: 25px; width: 100%; max-width: 400px; border: 1px solid #333; }
         .form-input { width: 100%; padding: 15px; background: #252525; border: 1px solid #333; border-radius: 12px; color: #fff; margin-bottom: 15px; outline: none; }
-        .pay-option { background: #252525; border: 1px solid #333; padding: 12px; border-radius: 10px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-dim); cursor: pointer; }
+        .pay-option { background: #252525; border: 1px solid #333; padding: 12px; border-radius: 10px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-dim); cursor: pointer; transition: 0.3s; }
         .pay-option.selected { border-color: var(--gold); background: rgba(255,215,0,0.1); color: var(--gold); }
 
-        .nota-container { background: #fff; color: #333; padding: 25px; border-radius: 15px 15px 0 0; position: relative; font-family: 'Courier New', Courier, monospace; width: 100%; }
+        .nota-container { background: #fff; color: #333; padding: 25px; border-radius: 15px; font-family: 'Courier New', Courier, monospace; width: 100%; }
         .nota-header { text-align: center; border-bottom: 1px dashed #bbb; padding-bottom: 10px; margin-bottom: 15px; }
-        .nota-body { font-size: 12px; line-height: 1.5; border-bottom: 1px dashed #bbb; padding-bottom: 10px; }
         .nota-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; padding-top: 10px; margin-bottom: 10px; color: #000; }
         .nota-footer { text-align: center; font-size: 10px; font-style: italic; color: #777; margin-top: 15px; }
 
@@ -71,23 +71,24 @@
         <div class="menu-grid" id="menu-display"></div>
         <div class="dock-wrapper">
             <div class="dock" id="dock">
-                <div><p style="font-size:10px; color:var(--text-dim);">TOTAL</p><p style="font-size:18px; font-weight:800; color:var(--gold);" id="price-total">Rp 0</p></div>
-                <button onclick="openCheckout()" style="padding:12px 25px; background:var(--gold); border:none; border-radius:12px; font-weight:800;">GAS!</button>
+                <div><p style="font-size:10px; color:var(--text-dim);">ESTIMASI TOTAL</p><p style="font-size:18px; font-weight:800; color:var(--gold);" id="price-total">Rp 0</p></div>
+                <button onclick="openCheckout()" style="padding:12px 25px; background:var(--gold); border:none; border-radius:12px; font-weight:800; cursor:pointer;">BAYAR</button>
             </div>
         </div>
     </div>
 
     <div class="overlay" id="checkout-overlay">
         <div class="checkout-card">
-            <h3 style="color:var(--gold); margin-bottom:15px;">DATA PESANAN</h3>
-            <input type="text" id="buyer-name" class="form-input" placeholder="Nama Pelanggan / Meja">
+            <h3 style="color:var(--gold); margin-bottom:15px;">DATA PEMBELI</h3>
+            <input type="text" id="buyer-name" class="form-input" placeholder="Nama / No. Meja">
+            <p style="font-size: 11px; color: var(--text-dim); margin-bottom: 10px;">PILIH METODE PEMBAYARAN:</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:20px;">
-                <div class="pay-option" onclick="selectPay('QRIS', this)">QRIS</div>
-                <div class="pay-option" onclick="selectPay('TUNAI', this)">TUNAI (KASIR)</div>
+                <div class="pay-option" id="pay-qris" onclick="selectPay('QRIS')">QRIS<br>(Self Service)</div>
+                <div class="pay-option" id="pay-tunai" onclick="selectPay('TUNAI')">TUNAI<br>(Ke Kasir)</div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
-                <button onclick="closeCheckout()" style="background:#333; color:#fff; border:none; border-radius:12px; padding:12px;">BATAL</button>
-                <button onclick="prosesPesanan()" style="background:var(--gold); font-weight:800; border:none; border-radius:12px;">ORDER</button>
+                <button onclick="closeCheckout()" style="background:#333; color:#fff; border:none; border-radius:12px; padding:12px; cursor:pointer;">BATAL</button>
+                <button onclick="prosesPesanan()" style="background:var(--gold); font-weight:800; border:none; border-radius:12px; cursor:pointer;">KIRIM PESANAN</button>
             </div>
         </div>
     </div>
@@ -96,7 +97,8 @@
         <h2 style="color:var(--gold)">SCAN & BAYAR</h2>
         <p id="qr-total-label" style="color:#fff; font-size:22px; font-weight:800; margin-top:5px;"></p>
         <img id="qr-image" src="" alt="QRIS">
-        <button id="btn-view-nota" style="margin-top:20px; background:var(--gold); padding:15px 40px; border:none; border-radius:12px; font-weight:800;">📄 LIHAT NOTA</button>
+        <p style="color: var(--text-dim); font-size: 12px; padding: 0 20px;">Silahkan screenshot bukti bayar dan tunjukkan ke kasir jika diminta.</p>
+        <button id="btn-view-nota" style="margin-top:20px; background:var(--gold); padding:15px 40px; border:none; border-radius:12px; font-weight:800; cursor:pointer;">LIHAT NOTA</button>
     </div>
 
     <div class="overlay" id="nota-overlay">
@@ -107,37 +109,35 @@
                     <span style="font-size:10px;">SMK Muhammadiyah 1 Prambon</span>
                     <div id="nota-meta" style="font-size:10px; text-align:left; margin-top:10px; border-top:1px dashed #ddd; padding-top:10px;"></div>
                 </div>
-                <div id="nota-items-list" class="nota-body"></div>
+                <div id="nota-items-list" style="font-size: 12px; margin-bottom: 10px;"></div>
                 <div class="nota-total"><span>TOTAL</span><span id="nota-total-val"></span></div>
-                <div class="nota-footer">"Barakallahu fiikum"</div>
+                <div class="nota-footer">"Menuntut ilmu adalah ibadah"<br>Terima kasih sudah jajan!</div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:30px;">
-                <button onclick="location.reload()" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid #444; border-radius:12px; padding:12px;">TUTUP</button>
+                <button onclick="location.reload()" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid #444; border-radius:12px; padding:12px;">SELESAI</button>
                 <button onclick="downloadPDF()" style="background:#27ae60; color:#fff; border:none; border-radius:12px; padding:12px; font-weight:bold;">SIMPAN PDF</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- KONFIGURASI ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGUEqvDp-EwGxFMANxT2Yv9vRrRXgLUwS05M9ld7mnEKcESBZa_EFbP1fYsBzSQwl-2g/exec";
         const TELE_TOKEN = "7982712334:AAFS2RvvZ_p3YACAoFGxwkq_vY9Ov9zKd7E";
         const TELE_CHAT_ID = "6381109580";
         const QRIS_DATA = "00020101021126670014ID.CO.QRIS.WWW0215ID10200542345670303UME51440014ID.CO.QRIS.WWW0215ID10200542345670303UME5204599953033605802ID5911KANTIN MUTU6007PRAMBON6105644716304ABCD";
 
-        let allData = [], cart = {}, currentCat = "Semua", selectedPay = "", currentOrderData = {};
+        let allData = [], cart = {}, currentCat = "Semua", selectedPayMethod = "", currentOrderData = {};
 
         async function init() {
             try {
                 const res = await fetch(`${SCRIPT_URL}?action=getMenu`);
                 const raw = await res.json();
-                // Map data sesuai kolom Spreadsheet: name, price, category, imgurl
                 allData = raw.map((item, i) => ({ 
-                  id: `item-${i}`, 
-                  name: item.name, 
-                  price: parseInt(item.price), 
-                  cat: item.category, 
-                  img: item.imgurl || `https://via.placeholder.com/150?text=Menu` 
+                    id: `item-${i}`, 
+                    name: item.name, 
+                    price: parseInt(item.price), 
+                    cat: item.category, 
+                    img: item.imgurl || `https://via.placeholder.com/150?text=${item.name}` 
                 }));
                 renderCategories(); renderMenu("Semua");
                 document.getElementById('loading-screen').classList.add('fade-out');
@@ -174,49 +174,58 @@
             total > 0 ? document.getElementById('dock').classList.add('active') : document.getElementById('dock').classList.remove('active');
         }
 
-        function selectPay(m, el) { selectedPay = m; document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); }
+        function selectPay(m) { 
+            selectedPayMethod = m; 
+            document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+            if(m === 'QRIS') document.getElementById('pay-qris').classList.add('selected');
+            if(m === 'TUNAI') document.getElementById('pay-tunai').classList.add('selected');
+        }
+
         function openCheckout() { document.getElementById('checkout-overlay').classList.add('active'); }
         function closeCheckout() { document.getElementById('checkout-overlay').classList.remove('active'); }
 
         async function prosesPesanan() {
             const namaInput = document.getElementById('buyer-name').value;
-            if(!namaInput || !selectedPay) return alert("Isi Nama & Pilih Pembayaran!");
+            if(!namaInput || !selectedPayMethod) return alert("Lengkapi Nama & Metode Pembayaran!");
 
             const now = new Date();
-            const orderID = `KMU2${now.getTime().toString().slice(-8)}`;
+            const orderID = `MUTU${now.getTime().toString().slice(-6)}`;
             let total = 0, detail = "";
             for(let k in cart) { total += cart[k].qty * cart[k].price; detail += `${cart[k].name} (x${cart[k].qty}), `; }
 
-            currentOrderData = { nama: namaInput, total, statusBayar: selectedPay, orderID };
+            // LOGIKA KATEGORI SESUAI PERMINTAAN LU
+            const kategoriSpreadsheet = (selectedPayMethod === 'QRIS') ? "QRIS Self Service" : "TUNAI di kasir";
 
-            // 1. SIMPAN KE SHEET
+            currentOrderData = { nama: namaInput, total, kategori: kategoriSpreadsheet, orderID };
+
+            // 1. KIRIM KE SPREADSHEET
             fetch(SCRIPT_URL, { 
-              method: 'POST', 
-              mode: 'no-cors', 
-              body: JSON.stringify({ action: "saveOrder", table: orderID, datetime: now.toLocaleString("id-ID"), items: detail, total, kategori: selectedPay, nama: namaInput }) 
+                method: 'POST', mode: 'no-cors', 
+                body: JSON.stringify({ action: "saveOrder", table: orderID, datetime: now.toLocaleString("id-ID"), items: detail, total, kategori: kategoriSpreadsheet, nama: namaInput }) 
             });
 
-            // 2. TELEGRAM
-            const msg = `🚀 *PESANAN BARU*\n🆔 *ID:* ${orderID}\n👤 *Nama:* ${namaInput}\n💰 *Total:* Rp ${total.toLocaleString('id-ID')}\n💳 *Metode:* ${selectedPay}\n📦 *Item:* ${detail}`;
-            fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TELE_CHAT_ID, text: msg, parse_mode: 'Markdown' }) });
+            // 2. KIRIM KE TELEGRAM (Notif buat lu/kasir)
+            const teleMsg = `🚨 *PESANAN SISWA*\n━━━━━━━━━━━━\n👤 *Nama:* ${namaInput}\n💰 *Total:* Rp ${total.toLocaleString()}\n💳 *Metode:* ${kategoriSpreadsheet}\n📦 *Item:* ${detail}\n━━━━━━━━━━━━`;
+            fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TELE_CHAT_ID, text: teleMsg, parse_mode: 'Markdown' }) });
 
-            if(selectedPay === 'QRIS') {
-                document.getElementById('qr-total-label').innerText = `Rp ${total.toLocaleString('id-ID')}`;
+            if(selectedPayMethod === 'QRIS') {
+                document.getElementById('qr-total-label').innerText = `Rp ${total.toLocaleString()}`;
                 document.getElementById('qr-image').src = `https://qris.kurniawanad.my.id/qris.php?data=${QRIS_DATA}&amount=${total}`;
                 document.getElementById('qr-modal').style.display = 'flex';
-                document.getElementById('btn-view-nota').onclick = showNotaPreview;
+                document.getElementById('btn-view-nota').onclick = showNota;
             } else {
-                showNotaPreview();
+                showNota();
             }
         }
 
-        function showNotaPreview() {
+        function showNota() {
             const d = currentOrderData;
-            document.getElementById('nota-meta').innerHTML = `ID: <b>${d.orderID}</b><br>Pelanggan: <b>${d.nama}</b><br>Waktu: ${new Date().toLocaleString("id-ID")}<br>Bayar: ${d.statusBayar}`;
+            document.getElementById('nota-meta').innerHTML = `ID: <b>${d.orderID}</b><br>Nama: <b>${d.nama}</b><br>Tgl: ${new Date().toLocaleString("id-ID")}<br>Metode: ${d.kategori}`;
             let itemsHtml = "";
-            for(let k in cart) { itemsHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${cart[k].name} x${cart[k].qty}</span><span>${(cart[k].qty * cart[k].price).toLocaleString('id-ID')}</span></div>`; }
+            for(let k in cart) { itemsHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${cart[k].name} x${cart[k].qty}</span><span>${(cart[k].qty * cart[k].price).toLocaleString()}</span></div>`; }
             document.getElementById('nota-items-list').innerHTML = itemsHtml;
-            document.getElementById('nota-total-val').innerText = `Rp ${d.total.toLocaleString('id-ID')}`;
+            document.getElementById('nota-total-val').innerText = `Rp ${d.total.toLocaleString()}`;
+            
             document.getElementById('qr-modal').style.display = 'none';
             document.getElementById('checkout-overlay').classList.remove('active');
             document.getElementById('nota-overlay').classList.add('active');
