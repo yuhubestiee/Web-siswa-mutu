@@ -46,9 +46,7 @@
         .pay-option { background: #252525; border: 1px solid #333; padding: 12px; border-radius: 10px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-dim); cursor: pointer; }
         .pay-option.selected { border-color: var(--gold); background: rgba(255,215,0,0.1); color: var(--gold); }
 
-        /* DESIGN NOTA ESTETIK (MODEL STRUK) */
         .nota-container { background: #fff; color: #333; padding: 25px; border-radius: 15px 15px 0 0; position: relative; font-family: 'Courier New', Courier, monospace; width: 100%; }
-        .nota-container::after { content: ""; position: absolute; bottom: -12px; left: 0; width: 100%; height: 12px; background-image: radial-gradient(circle, transparent, transparent 50%, #fff 50%, #fff 100%); background-size: 12px 24px; background-position: 0 -12px; }
         .nota-header { text-align: center; border-bottom: 1px dashed #bbb; padding-bottom: 10px; margin-bottom: 15px; }
         .nota-body { font-size: 12px; line-height: 1.5; border-bottom: 1px dashed #bbb; padding-bottom: 10px; }
         .nota-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 900; padding-top: 10px; margin-bottom: 10px; color: #000; }
@@ -83,14 +81,13 @@
         <div class="checkout-card">
             <h3 style="color:var(--gold); margin-bottom:15px;">DATA PESANAN</h3>
             <input type="text" id="buyer-name" class="form-input" placeholder="Nama Pelanggan / Meja">
-            <div id="order-summary" style="margin-bottom:15px; font-size:12px;"></div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:20px;">
                 <div class="pay-option" onclick="selectPay('QRIS', this)">QRIS</div>
-                <div class="pay-option" onclick="selectPay('TUNAI', this)">TUNAI (BAYAR KASIR)</div>
+                <div class="pay-option" onclick="selectPay('TUNAI', this)">TUNAI (KASIR)</div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
                 <button onclick="closeCheckout()" style="background:#333; color:#fff; border:none; border-radius:12px; padding:12px;">BATAL</button>
-                <button onclick="prosesPesanan()" style="background:var(--gold); font-weight:800; border:none; border-radius:12px;">ORDER SEKARANG</button>
+                <button onclick="prosesPesanan()" style="background:var(--gold); font-weight:800; border:none; border-radius:12px;">ORDER</button>
             </div>
         </div>
     </div>
@@ -99,7 +96,6 @@
         <h2 style="color:var(--gold)">SCAN & BAYAR</h2>
         <p id="qr-total-label" style="color:#fff; font-size:22px; font-weight:800; margin-top:5px;"></p>
         <img id="qr-image" src="" alt="QRIS">
-        <p style="color:var(--text-dim); font-size:11px; padding:0 30px;">Screenshot QR ini dan bayar sesuai nominal.</p>
         <button id="btn-view-nota" style="margin-top:20px; background:var(--gold); padding:15px 40px; border:none; border-radius:12px; font-weight:800;">📄 LIHAT NOTA</button>
     </div>
 
@@ -113,18 +109,18 @@
                 </div>
                 <div id="nota-items-list" class="nota-body"></div>
                 <div class="nota-total"><span>TOTAL</span><span id="nota-total-val"></span></div>
-                <div class="nota-footer">"Menuntut ilmu adalah jihad yang pahalanya mengalir hingga akhir hayat"</div>
+                <div class="nota-footer">"Barakallahu fiikum"</div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:30px;">
-                <button onclick="location.reload()" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid #444; border-radius:12px; padding:12px; backdrop-filter:blur(5px);">TUTUP</button>
-                <button onclick="downloadPDF()" style="background:#27ae60; color:#fff; border:none; border-radius:12px; padding:12px; font-weight:bold;">📩 SIMPAN PDF</button>
+                <button onclick="location.reload()" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid #444; border-radius:12px; padding:12px;">TUTUP</button>
+                <button onclick="downloadPDF()" style="background:#27ae60; color:#fff; border:none; border-radius:12px; padding:12px; font-weight:bold;">SIMPAN PDF</button>
             </div>
         </div>
     </div>
 
     <script>
-        // URL Apps Script Terbaru
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVHA7SPg6q5rMuFq4UtD7yVhFczm9yaRrpHEvYh2Te21UPcWcJeAcf9Fk9HWBwSsV2RQ/exec";
+        // --- KONFIGURASI ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGUEqvDp-EwGxFMANxT2Yv9vRrRXgLUwS05M9ld7mnEKcESBZa_EFbP1fYsBzSQwl-2g/exec";
         const TELE_TOKEN = "7982712334:AAFS2RvvZ_p3YACAoFGxwkq_vY9Ov9zKd7E";
         const TELE_CHAT_ID = "6381109580";
         const QRIS_DATA = "00020101021126670014ID.CO.QRIS.WWW0215ID10200542345670303UME51440014ID.CO.QRIS.WWW0215ID10200542345670303UME5204599953033605802ID5911KANTIN MUTU6007PRAMBON6105644716304ABCD";
@@ -133,12 +129,19 @@
 
         async function init() {
             try {
-                const res = await fetch(SCRIPT_URL);
+                const res = await fetch(`${SCRIPT_URL}?action=getMenu`);
                 const raw = await res.json();
-                allData = raw.map((item, i) => ({ id: `item-${i}`, name: item.name, price: parseInt(item.price), cat: item.category, img: item.imgurl || `https://via.placeholder.com/150?text=${item.name}` }));
+                // Map data sesuai kolom Spreadsheet: name, price, category, imgurl
+                allData = raw.map((item, i) => ({ 
+                  id: `item-${i}`, 
+                  name: item.name, 
+                  price: parseInt(item.price), 
+                  cat: item.category, 
+                  img: item.imgurl || `https://via.placeholder.com/150?text=Menu` 
+                }));
                 renderCategories(); renderMenu("Semua");
                 document.getElementById('loading-screen').classList.add('fade-out');
-            } catch (e) { alert("Gagal konek cloud!"); }
+            } catch (e) { alert("Gagal memuat menu. Cek koneksi!"); }
         }
 
         function renderCategories() {
@@ -179,43 +182,24 @@
             const namaInput = document.getElementById('buyer-name').value;
             if(!namaInput || !selectedPay) return alert("Isi Nama & Pilih Pembayaran!");
 
-            // --- LOGIKA ID PESANAN KMU2 ---
             const now = new Date();
-            const yy = now.getFullYear().toString().slice(-2);
-            const m = (now.getMonth() + 1).toString().padStart(2, '0');
-            const dd = now.getDate().toString().padStart(2, '0');
-            const hh = now.getHours().toString().padStart(2, '0');
-            const mm = now.getMinutes().toString().padStart(2, '0');
-            const ss = now.getSeconds().toString().padStart(2, '0');
-            const rand = Math.floor(Math.random() * 90) + 10;
-            const orderID = `KMU2${yy}${m}${dd}${hh}${mm}${ss}${rand}`;
-
+            const orderID = `KMU2${now.getTime().toString().slice(-8)}`;
             let total = 0, detail = "";
             for(let k in cart) { total += cart[k].qty * cart[k].price; detail += `${cart[k].name} (x${cart[k].qty}), `; }
 
-            const statusBayar = (selectedPay === 'QRIS') ? "QRIS" : "Tunai (Bayar di kasir)";
-            currentOrderData = { nama: namaInput, total, statusBayar, orderID };
+            currentOrderData = { nama: namaInput, total, statusBayar: selectedPay, orderID };
 
-            // 1. SIMPAN SHEET (KOLOM A-F)
-            const payload = {
-                action: "saveOrder",
-                table: orderID,       // Kolom A
-                datetime: now.toLocaleString("id-ID"), // Kolom B
-                items: detail,        // Kolom C
-                total: total,         // Kolom D
-                kategori: statusBayar, // Kolom E
-                nama: namaInput       // Kolom F
-            };
-
-            try {
-                fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            } catch (e) { console.log(e); }
+            // 1. SIMPAN KE SHEET
+            fetch(SCRIPT_URL, { 
+              method: 'POST', 
+              mode: 'no-cors', 
+              body: JSON.stringify({ action: "saveOrder", table: orderID, datetime: now.toLocaleString("id-ID"), items: detail, total, kategori: selectedPay, nama: namaInput }) 
+            });
 
             // 2. TELEGRAM
-            const msg = `🚀 *PESANAN BARU*\n🆔 *ID:* ${orderID}\n👤 *Nama:* ${namaInput}\n💰 *Total:* Rp ${total.toLocaleString('id-ID')}\n💳 *Status:* ${statusBayar}\n📦 *Item:* ${detail}`;
+            const msg = `🚀 *PESANAN BARU*\n🆔 *ID:* ${orderID}\n👤 *Nama:* ${namaInput}\n💰 *Total:* Rp ${total.toLocaleString('id-ID')}\n💳 *Metode:* ${selectedPay}\n📦 *Item:* ${detail}`;
             fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TELE_CHAT_ID, text: msg, parse_mode: 'Markdown' }) });
 
-            // 3. TAMPILAN
             if(selectedPay === 'QRIS') {
                 document.getElementById('qr-total-label').innerText = `Rp ${total.toLocaleString('id-ID')}`;
                 document.getElementById('qr-image').src = `https://qris.kurniawanad.my.id/qris.php?data=${QRIS_DATA}&amount=${total}`;
@@ -229,21 +213,18 @@
         function showNotaPreview() {
             const d = currentOrderData;
             document.getElementById('nota-meta').innerHTML = `ID: <b>${d.orderID}</b><br>Pelanggan: <b>${d.nama}</b><br>Waktu: ${new Date().toLocaleString("id-ID")}<br>Bayar: ${d.statusBayar}`;
-            
             let itemsHtml = "";
             for(let k in cart) { itemsHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${cart[k].name} x${cart[k].qty}</span><span>${(cart[k].qty * cart[k].price).toLocaleString('id-ID')}</span></div>`; }
-            
             document.getElementById('nota-items-list').innerHTML = itemsHtml;
             document.getElementById('nota-total-val').innerText = `Rp ${d.total.toLocaleString('id-ID')}`;
-            if(document.getElementById('qr-modal')) document.getElementById('qr-modal').style.display = 'none';
+            document.getElementById('qr-modal').style.display = 'none';
             document.getElementById('checkout-overlay').classList.remove('active');
             document.getElementById('nota-overlay').classList.add('active');
         }
 
         function downloadPDF() {
             const element = document.getElementById('nota-pdf-content');
-            const opt = { margin: 10, filename: `Nota-${currentOrderData.nama}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 3 }, jsPDF: { unit: 'mm', format: 'a6', orientation: 'portrait' } };
-            html2pdf().set(opt).from(element).save();
+            html2pdf().set({ margin: 10, filename: `Nota-${currentOrderData.nama}.pdf`, jsPDF: { unit: 'mm', format: 'a6', orientation: 'portrait' } }).from(element).save();
         }
 
         init();
